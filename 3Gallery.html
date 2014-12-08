@@ -151,6 +151,7 @@ scene.add(cube2);*/
 
 			var raf;
 			var clicked = false;
+            var activeCat;
 			//var projector = new THREE.Projector();
 		    renderer.domElement.addEventListener('click', function(e){
 		        var mouseX = e.clientX - getElementPosition(renderer.domElement).left;
@@ -172,29 +173,48 @@ scene.add(cube2);*/
 				plane1.scale.y = 2;
 				plane1.position.y = 1;*/
 				if(raf != null) {
-					if(!clicked){
+//					if(!clicked){
 
-						plane1.scale.x = 2;
-						plane1.scale.y = 2;
-						plane1.position.y = 1;
-						plane1.position.x = 0;
-						plane1.position.z = 0;
+//						plane1.scale.x = 2;
+//						plane1.scale.y = 2;
+//						plane1.position.y = 1;
+//						plane1.position.x = 0;
+//						plane1.position.z = 0;
 
-						cancelAnimationFrame( raf );
-						clicked = true;
+//						cancelAnimationFrame( raf );
+//						clicked = true;
 
 
-					}
-					else{
+//					}
+//					else{
 						requestAnimationFrame(render);
-						clicked = false;
+//						clicked = false;
 				/*
 						plane1.scale.x = 0.5;
 								plane1.scale.y = 0.5;
 								plane1.position.y = 0;*/
-					}
+//					}
 				}
 
+//                if(clicked) {
+//                    return false;
+//                }
+                var catZ = 1000000,
+                    catIndex = 0;
+
+                console.log(scene.position.z);
+                for(var cat in imArray) {
+//                    console.log(imArray[cat].position.z);
+//                    console.log(camera.position.z - imArray[cat].position.z);
+//                    console.log(cat);
+                    if(camera.position.z - imArray[cat].position.z < catZ) {
+                        catIndex = cat;
+                        catZ = camera.position.z - imArray[cat].position.z;
+                    }
+                }
+                console.log(scene.rotation.y)
+                activeCat = catIndex;
+                clicked = true;
 		/*        if(intersects.length > 0){
 		            console.log(intersects[ 0 ].object);
 		            var color = Math.random() * 0xffffff;
@@ -203,6 +223,21 @@ scene.add(cube2);*/
 		        //renderer.render( scene, camera );
 		    }, false);
 
+            var catAnimation = function (givenCat) {
+                givenCat.scale.x += 0.02;
+                givenCat.scale.y += 0.02;
+                if(givenCat.position.x > 0) {
+                    givenCat.position.x -= 0.1;
+                }
+                if(givenCat.position.z > 0) {
+                    givenCat.position.z -= 0.1;
+                }
+
+                if(givenCat.position.x <= 0 && givenCat.position.z <= 0 ) {
+                    return false;
+                }
+                return true;
+            }
 			var render = function () {
 				camera.lookAt( scene.position );
 				raf = requestAnimationFrame( render );
@@ -221,12 +256,12 @@ scene.add(cube2);*/
 				plane8.rotation.y -= speed;
 				plane9.rotation.y -= speed;
 
-/*
+
 				if(clicked){
-					plane1.scale.x += 0.2;
-				plane1.scale.y += 2;
-				plane1.position.y = 1;
-				}*/
+					clicked = catAnimation(imArray[activeCat]);
+				}
+
+
 
 
 
